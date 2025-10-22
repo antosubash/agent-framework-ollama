@@ -54,6 +54,10 @@
               "target": "Package",
               "version": "[1.0.0-preview.251016.1, )"
             },
+            "Microsoft.Agents.AI.Workflows": {
+              "target": "Package",
+              "version": "[1.0.0-preview.251016.1, )"
+            },
             "OllamaSharp": {
               "target": "Package",
               "version": "[5.4.8, )"
