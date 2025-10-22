@@ -177,11 +177,8 @@ internal class Program
         var agentTestCases = new[]
         {
             "Hello, this is a clean message!",
-            "This is a damn stupid message with profanity",
-            "What the hell is going on here?",
             "You are such an idiot and moron!",
             "I hate this crap so much",
-            "This message is completely clean and appropriate"
         };
 
         foreach (var testCase in agentTestCases)
