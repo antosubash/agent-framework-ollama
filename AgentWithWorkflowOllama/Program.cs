@@ -40,6 +40,8 @@ internal class Program
         await RunStreamingWorkflowDemo();
 
         Console.WriteLine();
+        Console.WriteLine(new string('=', 60));
+        Console.WriteLine();
 
         // Run AI agent workflow demo
         await RunAgentWorkflowDemo(agent);
