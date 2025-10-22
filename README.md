@@ -1,153 +1,320 @@
-# Agent Framework with Ollama Sample
+# Profanity Filter Workflow with AI Agents
 
-A .NET application demonstrating Microsoft Agents AI framework integration with Ollama for local AI model execution. This project showcases various agent capabilities including streaming responses, multi-turn conversations, function tools, and middleware integration.
+A comprehensive profanity filtering system built with Microsoft Agent Framework that demonstrates multiple workflow patterns including standard processing, streaming, AI-powered analysis, and real-time streaming AI.
 
-## Features
+## 🚀 Features
 
-- 🤖 **AI Agent Integration**: Uses Microsoft Agents AI framework with Ollama
-- 💬 **Multi-turn Conversations**: Context preservation across conversation turns
-- 🌊 **Streaming Responses**: Real-time character-by-character response streaming
-- 🔧 **Function Tools**: Agent can call custom functions (e.g., weather API)
-- ⚙️ **Middleware Support**: Custom middleware for function call logging
+### Four Workflow Execution Modes
 
-## Prerequisites
+1. **📋 Standard Workflow** - Traditional rule-based profanity detection and filtering
+2. **🌊 Streaming Workflow** - Chunked processing for large texts with real-time feedback
+3. **🤖 AI Agent Workflow** - Intelligent AI-powered analysis with confidence scoring
+4. **🌊🤖 Streaming AI Workflow** - Real-time streaming AI analysis with live output
 
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
-- [Ollama](https://ollama.com/) installed and running locally
-- A compatible model (e.g., `qwen3:8b`) pulled in Ollama
+### Key Capabilities
 
-## Installation
+- **Intelligent Detection**: AI-powered contextual analysis beyond simple word matching
+- **Real-time Processing**: Streaming capabilities for immediate feedback
+- **Confidence Scoring**: AI provides reliability metrics for each decision
+- **Transparent Reasoning**: Detailed explanations for AI decisions
+- **Fallback Mechanisms**: Graceful degradation to rule-based processing
+- **Configurable Chunking**: Adjustable chunk sizes for different use cases
+- **Comprehensive Analytics**: Detailed metrics and statistics
 
-1. **Clone the repository**
+## 🛠️ Prerequisites
+
+- .NET 10.0 or later
+- Ollama running locally with the `qwen3:8b` model
+- Microsoft Agent Framework packages
+
+## 📦 Installation
+
+1. Clone the repository:
    ```bash
    git clone <repository-url>
    cd agent-framework-ollama
    ```
 
-2. **Install Ollama** (if not already installed)
+2. Install dependencies:
    ```bash
-   # Windows (using winget)
-   winget install Ollama.Ollama
-   
-   # macOS
-   brew install ollama
-   
-3. **Pull a compatible model**
-   ```bash
-   ollama pull qwen3:8b
-   ```
+cd AgentWithWorkflowOllama
+dotnet restore
+```
 
-4. **Start Ollama service**
+3. Ensure Ollama is running with the required model:
    ```bash
+ollama pull qwen3:8b
    ollama serve
    ```
 
-5. **Restore dependencies and run**
+## 🏃‍♂️ Running the Application
+
    ```bash
-   dotnet restore
    dotnet run
    ```
 
-## Configuration
+The application will demonstrate all four workflow modes with sample test cases.
 
-The application is configured to connect to Ollama running on `http://localhost:11434`. You can modify these settings in `Program.cs`:
+## 📁 Project Structure
+
+```
+AgentWithWorkflowOllama/
+├── Program.cs                           # Main application with all demos
+├── Constants.cs                         # Configuration constants
+├── ProfanityDetectorExecutor.cs         # Rule-based profanity detection
+├── TextFilterExecutor.cs                # Rule-based text filtering
+├── StreamingTextSource.cs               # Text chunking for streaming
+├── StreamingExecutors.cs               # Streaming versions of executors
+├── StreamingProfanityFilterService.cs   # Streaming workflow service
+├── AIAgentResults.cs                    # Data structures for AI results
+├── AIProfanityDetectionAgent.cs         # AI-powered detection
+├── AITextFilteringAgent.cs             # AI-powered filtering
+├── StreamingAIAgents.cs                # Streaming AI agents
+└── StreamingAIProfanityFilterService.cs # Streaming AI service
+```
+
+## 🔧 Configuration
+
+### Constants Configuration
+
+Edit `Constants.cs` to customize:
+
+```csharp
+public static readonly string[] ProfaneWords = 
+[
+    "damn", "hell", "crap", "stupid", "idiot", "moron", 
+    "jerk", "loser", "hate", "kill", "die", "suck"
+];
+
+public const char ReplacementCharacter = '*';
+public const int MinimumWordLength = 3;
+```
+
+### Ollama Configuration
+
+Update the Ollama endpoint and model in `Program.cs`:
 
 ```csharp
 var endpoint = "http://localhost:11434";
 var modelName = "qwen3:8b";
 ```
 
-## Examples
+## 📊 Workflow Comparison
 
-The application demonstrates four different scenarios:
+| Feature | Standard | Streaming | AI Agent | Streaming AI |
+|---------|----------|-----------|----------|--------------|
+| **Detection Accuracy** | Good | Good | Excellent | Excellent |
+| **Context Understanding** | Limited | Limited | Advanced | Advanced |
+| **Memory Efficiency** | High | High | Medium | High |
+| **Real-time Processing** | ❌ | ✅ | ❌ | ✅ |
+| **Confidence Scoring** | ❌ | ❌ | ✅ | ✅ |
+| **Reasoning Transparency** | ❌ | ❌ | ✅ | ✅ |
+| **Scalability** | High | High | Medium | High |
+| **Resource Usage** | Low | Medium | High | Medium |
 
-### 1. Multi-Turn Conversation (Non-Streaming)
-Shows immediate complete responses with context preservation:
+## 🎯 Usage Examples
+
+### Standard Workflow
 ```csharp
-AgentThread thread = agent.GetNewThread();
-Console.WriteLine(await agent.RunAsync("Tell me a joke about a pirate.", thread));
-Console.WriteLine(await agent.RunAsync("Now add some emojis to the joke and tell it in the voice of a pirate's parrot.", thread));
+var profanityDetector = new ProfanityDetectorExecutor();
+var textFilter = new TextFilterExecutor();
+
+var builder = new WorkflowBuilder(profanityDetector);
+builder.AddEdge(profanityDetector, textFilter).WithOutputFrom(textFilter);
+var workflow = builder.Build();
+
+var run = await InProcessExecution.RunAsync(workflow, "This is a damn stupid message");
 ```
 
-### 2. Multi-Turn Conversation (Streaming)
-Character-by-character streaming with context preservation:
+### Streaming Workflow
 ```csharp
-AgentThread thread = agent.GetNewThread();
-await DisplayStreamingResponse("Tell me a joke about a pirate.", thread);
-await DisplayStreamingResponse("Now add some emojis to the joke and tell it in the voice of a pirate's parrot.", thread);
+await StreamingProfanityFilterService.ProcessStreamingTextAsync(
+    "Long text with profanity...", 
+    chunkSize: 50
+);
 ```
 
-### 3. Function Tools Integration
-Agent calling custom functions for real-time data:
+### AI Agent Workflow
 ```csharp
-// Custom weather function
-[Description("Get the weather for a given location.")]
-static string GetWeather([Description("The location to get the weather for.")] string location)
-    => $"The weather in {location} is cloudy with a high of 15°C.";
+var profanityDetectionAgent = new AIProfanityDetectionAgent(agent);
+var textFilteringAgent = new AITextFilteringAgent(agent);
 
-// Agent with tools
-AIAgent agent = new ChatClientAgent(chatClient, instructions, name, tools: [AIFunctionFactory.Create(GetWeather)]);
+var builder = new WorkflowBuilder(profanityDetectionAgent);
+builder.AddEdge(profanityDetectionAgent, textFilteringAgent).WithOutputFrom(textFilteringAgent);
+var workflow = builder.Build();
+
+var run = await InProcessExecution.RunAsync(workflow, "This is a damn stupid message");
 ```
 
-### 4. Middleware Integration
-Custom middleware for function call logging:
+### Streaming AI Workflow
 ```csharp
-async ValueTask<object?> FunctionCallMiddleware(AIAgent agent, FunctionInvocationContext context, Func<FunctionInvocationContext, CancellationToken, ValueTask<object?>> next, CancellationToken cancellationToken)
-{
-    Console.WriteLine($"🔧 Function Name: {context!.Function.Name} - Middleware Pre-Invoke");
-    var result = await next(context, cancellationToken);
-    Console.WriteLine($"🔧 Function Name: {context!.Function.Name} - Middleware Post-Invoke");
-    return result;
-}
+await StreamingAIProfanityFilterService.ProcessStreamingAITextAsync(
+    "Long text with profanity...", 
+    agent, 
+    chunkSize: 40
+);
 ```
 
-## Project Structure
+## 🔍 AI Agent Features
 
-```
-agent-framework-ollama/
-├── AgentWithOllama/
-│   ├── Program.cs              # Main application code
-│   ├── AgentWithOllama.csproj  # Project file
-│   └── bin/                    # Build output
-├── agent-framework-ollama.sln  # Solution file
-└── README.md                   # This file
-```
+### Intelligent Analysis
+- **Contextual Understanding**: Distinguishes between appropriate and inappropriate usage
+- **Confidence Scoring**: Provides reliability metrics (0-100%)
+- **Detailed Reasoning**: Explains decision-making process
+- **Conservative Approach**: Suitable for professional environments
 
-## Dependencies
+### Real-time Streaming
+- **Live Output**: Shows AI responses as they're generated
+- **Chunk Processing**: Handles large texts efficiently
+- **Progressive Results**: Immediate feedback for each chunk
+- **Aggregated Analytics**: Comprehensive metrics across all chunks
 
-- **Microsoft.Agents.AI** (1.0.0-preview.251002.1): Microsoft's Agents AI framework
-- **OllamaSharp** (5.4.7): .NET client for Ollama API
-- **Microsoft.Extensions.AI**: AI extensions for dependency injection
+## 📈 Performance Metrics
 
-## Usage Examples
+The application tracks various metrics:
 
-### Basic Streaming
+- **Words Filtered**: Total number of profane words replaced
+- **Chunks Processed**: Number of text chunks analyzed
+- **AI Confidence**: Average confidence across all decisions
+- **Processing Time**: Real-time performance monitoring
+- **Fallback Usage**: Frequency of rule-based fallbacks
+
+## 🛡️ Error Handling
+
+- **Graceful Degradation**: Falls back to rule-based processing if AI fails
+- **Exception Handling**: Comprehensive error catching and reporting
+- **Connection Resilience**: Handles Ollama connection issues
+- **Input Validation**: Validates text input before processing
+
+## 🔧 Customization
+
+### Adding New Profane Words
+Edit the `ProfaneWords` array in `Constants.cs`:
+
 ```csharp
-await foreach (var update in agent.RunStreamingAsync("Tell me a joke"))
-{
-    Console.Write(update);
-}
+public static readonly string[] ProfaneWords = 
+[
+    "damn", "hell", "crap", "stupid", "idiot", "moron", 
+    "jerk", "loser", "hate", "kill", "die", "suck",
+    "your-new-word"  // Add custom words here
+];
 ```
 
-### Multi-turn with Context
+### Adjusting Chunk Sizes
+Modify chunk sizes in the demo methods:
+
 ```csharp
-AgentThread thread = agent.GetNewThread();
-await DisplayStreamingResponse("What's your name?", thread);
-await DisplayStreamingResponse("What did I just ask you?", thread); // Agent remembers!
+await StreamingAIProfanityFilterService.ProcessStreamingAITextAsync(
+    text, 
+    agent, 
+    chunkSize: 30  // Adjust chunk size here
+);
 ```
 
-### Function Calling
-```csharp
-await DisplayStreamingResponse("What's the weather in Paris?");
-// Agent will call GetWeather("Paris") and incorporate the result
+### Custom AI Prompts
+Modify prompts in the AI agent classes for different analysis approaches.
+
+## 🧪 Testing
+
+The application includes comprehensive test cases:
+
+- **Clean Messages**: Verify no false positives
+- **Profane Messages**: Test detection accuracy
+- **Mixed Content**: Validate contextual understanding
+- **Edge Cases**: Handle special characters and formatting
+- **Long Texts**: Test streaming capabilities
+
+## 📝 Sample Output
+
+```
+🌊🤖 STREAMING AI AGENT WORKFLOW DEMO
+====================================
+
+🤖🌊 Testing streaming AI with: "This is a damn stupid message"
+
+🤖 Starting streaming AI profanity filter for text: "This is a damn stupid message"
+📦 Chunk size: 40 characters
+
+📥 Processing chunk: "This is a damn stupid message"
+    🤖 AI streaming response:
+    💭 {
+    "hasProfanity": true,
+    "detectedWords": ["damn"],
+    "confidence": 0.9,
+    "reasoning": "The word 'damn' is a commonly considered profanity..."
+    }
+    🤖 AI streaming filter response:
+    🛡️ {
+    "filteredText": "This is a **** stupid message",
+    "wordsFiltered": 1,
+    "confidence": 1.0,
+    "reasoning": "Replaced 'damn' with '****' as it is a profane word..."
+    }
+  🤖 AI Detection: ❌ Profanity detected
+  🧠 AI Confidence: 100,0 %
+  📝 Detected words: damn
+  💭 AI Reasoning: The word 'damn' is a commonly considered profanity...
+  🛡️ AI Filtered: "This is a **** stupid message"
+  📊 Words filtered: 1
+  🧠 AI Confidence: 100,0 %
+  💭 AI Reasoning: Replaced 'damn' with '****' as it is a profane word...
+
+🎯 Streaming AI Processing Complete!
+📄 Original text: "This is a damn stupid message"
+🛡️ AI Filtered text: "This is a **** stupid message"
+📊 Total words filtered: 1
+📦 Total chunks processed: 1
+🧠 Average AI confidence: 100,0 %
 ```
 
-## License
+## 🤝 Contributing
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
-## Acknowledgments
+## 📄 License
 
-- [Microsoft Agents AI](https://github.com/microsoft/agent-framework) - The AI framework
-- [Ollama](https://ollama.com/) - Local AI model execution
-- [OllamaSharp](https://github.com/awaescher/OllamaSharp) - .NET Ollama client
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Microsoft Agent Framework for the workflow infrastructure
+- Ollama for local AI model hosting
+- qwen3:8b model for intelligent text analysis
+
+## 📞 Support
+
+For issues and questions:
+1. Check the troubleshooting section below
+2. Review the error messages in the console output
+3. Ensure Ollama is running with the correct model
+4. Verify .NET 10.0+ is installed
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**Ollama Connection Error**
+```
+❌ Error in AI agent processing: Connection refused
+💡 Make sure Ollama is running with the qwen3:8b model
+```
+Solution: Start Ollama and pull the required model
+
+**Build Errors**
+```
+error CS1061: 'AIAgent' does not contain a definition for 'GenerateContentAsync'
+```
+Solution: Ensure you're using the correct Microsoft Agent Framework version
+
+**Performance Issues**
+- Reduce chunk sizes for faster processing
+- Use rule-based workflows for high-volume scenarios
+- Consider model size vs. accuracy trade-offs
+
+---
+
+**Built with ❤️ using Microsoft Agent Framework and Ollama**
