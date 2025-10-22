@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "dgSpecHash": "4thl8tmJ2+U=",
+  "success": true,
+  "projectFilePath": "J:\\repos\\GitHub\\agent-framework-ollama\\AgentWithWorkflowOllama\\AgentWithWorkflowOllama.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\antos\\.nuget\\packages\\microsoft.agents.ai\\1.0.0-preview.251016.1\\microsoft.agents.ai.1.0.0-preview.251016.1.nupkg.sha512",
+    "C:\\Users\\antos\\.nuget\\packages\\microsoft.agents.ai.abstractions\\1.0.0-preview.251016.1\\microsoft.agents.ai.abstractions.1.0.0-preview.251016.1.nupkg.sha512",
+    "C:\\Users\\antos\\.nuget\\packages\\microsoft.extensions.ai\\9.10.0\\microsoft.extensions.ai.9.10.0.nupkg.sha512",
+    "C:\\Users\\antos\\.nuget\\packages\\microsoft.extensions.ai.abstractions\\9.10.0\\microsoft.extensions.ai.abstractions.9.10.0.nupkg.sha512",
+    "C:\\Users\\antos\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\9.0.10\\microsoft.extensions.caching.abstractions.9.0.10.nupkg.sha512",
+    "C:\\Users\\antos\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.10\\microsoft.extensions.dependencyinjection.abstractions.9.0.10.nupkg.sha512",
+    "C:\\Users\\antos\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\9.0.10\\microsoft.extensions.logging.abstractions.9.0.10.nupkg.sha512",
+    "C:\\Users\\antos\\.nuget\\packages\\microsoft.extensions.primitives\\9.0.10\\microsoft.extensions.primitives.9.0.10.nupkg.sha512",
+    "C:\\Users\\antos\\.nuget\\packages\\ollamasharp\\5.4.8\\ollamasharp.5.4.8.nupkg.sha512"
+  ],
+  "logs": []
+}
